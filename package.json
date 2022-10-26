@@ -9,7 +9,7 @@
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
-    "create-icons": "dotenv cross-var 'icongenie generate -m pwa -i $ICON_PATH' && mv ./public/icons/ ./public/img/",
+    "create-icons": "dotenv cross-var 'icongenie generate -m pwa -i $ICON_PATH' && mv ./public/icons/* ./public/img/",
     "dev": "quasar dev -m pwa",
     "build": "dotenv cross-var 'APP_HOST=$APP_HOST quasar build -m pwa' && npm run replace-icons",
     "replace-icons": "sed -i 's/icons/img/g' ./dist/pwa/index.html",
