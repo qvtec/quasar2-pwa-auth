@@ -12,6 +12,7 @@ const routes: RouteRecordRaw[] = [
     meta: { requireAuth: false },
     children: [
       { path: 'login', name: 'login', component: () => import('pages/auth/Login.vue') },
+      { path: 'signup', name: 'signup', component: () => import('pages/auth/Signup.vue') },
       { path: 'twofactor', name: 'twofactor', component: () => import('pages/auth/TwoFactorChallenge.vue') }
     ]
   },

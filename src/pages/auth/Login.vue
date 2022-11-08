@@ -2,8 +2,8 @@
   <q-page padding class="fit row justify-center q-pa-md items-baseline">
     <div class="col-xs-12 col-sm-7 col-lg-5" v-if="!user">
       <q-card flat bordered>
-        <q-card-section class="bg-grey-2">
-          <div class="text-h6">ログイン</div>
+        <q-card-section class="bg-secondary text-white">
+          <div class="text-h6">Login</div>
         </q-card-section>
 
         <q-separator />
@@ -18,7 +18,10 @@
               label="Email"
               type="email"
               lazy-rules
-              :rules="[val => !!val || '入力してください']"
+              :rules="[
+                val => !!val || '入力してください',
+                val => isEmail(val) || 'メールアドレスを入力してください'
+              ]"
             >
               <template v-slot:prepend>
                 <q-icon name="mail" />
@@ -30,12 +33,19 @@
               hide-bottom-space
               v-model="credentials.password"
               label="Password"
-              type="password"
+              :type="isPwd ? 'password' : 'text'"
               lazy-rules
               :rules="[val => !!val || '入力してください']"
             >
               <template v-slot:prepend>
                 <q-icon name="vpn_key" />
+              </template>
+              <template v-slot:append>
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
               </template>
             </q-input>
 
@@ -47,14 +57,15 @@
                 label="ログイン"
                 :loading="loading"
                 type="submit"
-                color="primary"
+                color="accent"
                 size="lg" />
             </div>
           </q-form>
         </q-card-section>
       </q-card>
-      <div class="q-py-md">
-        <q-btn flat label="パスワード再発行" to="/password/remind" icon="o_lock" />
+      <div class="q-py-sm">
+        <q-btn flat label="パスワード再発行" to="/password/remind" icon="o_lock" color="secondary" />
+        <q-btn flat label="アカウント登録" to="/auth/signup" icon="person_add" color="secondary" />
       </div>
     </div>
   </q-page>
@@ -63,6 +74,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
+import { isEmail } from '../../helpers/patterns'
 import { useAuthStore } from 'stores/auth'
 import { useRouter } from 'vue-router'
 import { Credentials } from 'components/models'
@@ -112,10 +124,12 @@ export default defineComponent({
     }
 
     return {
+      isPwd: ref(true),
       loading,
       user,
       remember,
       credentials,
+      isEmail,
       onSubmit
     }
   }

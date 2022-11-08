@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/axios';
-import { Credentials } from '../components/models';
+import { Credentials, SignupInterface } from '../components/models';
 
 export interface AuthStateInterface {
   user: UserInterface | null
@@ -28,7 +28,7 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    isAuth: (state) => state.user !== null
+    isAuth: (state) => state.user !== null && state.user.email_verified_at !== null
   },
 
   actions: {
@@ -42,6 +42,9 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       await api.post('logout')
       this.$reset()
+    },
+    async signup(params: SignupInterface) {
+      await api.post('register', params)
     },
     async setUser() {
       await api.get('me')

@@ -12,3 +12,10 @@ export interface Credentials {
   password: string;
   remember: boolean;
 }
+
+export interface SignupInterface {
+  email: string;
+  password: string;
+  password_confirmation: string;
+  name: string;
+}
