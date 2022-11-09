@@ -75,51 +75,40 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter, useRoute } from 'vue-router'
 import { api } from 'boot/axios'
 
-export default defineComponent({
-  name: 'PasswordResetPage',
-  setup() {
-    const $q = useQuasar()
-    const $router = useRouter()
-    const $route = useRoute()
+const $q = useQuasar()
+const $router = useRouter()
+const $route = useRoute()
 
-    const loading = ref(false)
-    const credentials = ref({
-      email: '',
-      password: '',
-      password_confirmation: ''
-    })
-
-    onMounted(() => {
-      credentials.value.email = String($route.query.email)
-    })
-
-    function onSubmit () {
-      loading.value = true
-      const token = $route.query.token
-
-      api.post('reset-password', { ...credentials.value, token })
-        .then(async (response) => {
-          await $router.replace({ name: 'login' })
-          $q.notify({ type: 'positive', message: response.data.message })
-        })
-        .finally(() => {
-          credentials.value.password = ''
-          credentials.value.password_confirmation = ''
-          loading.value = false
-        })
-    }
-
-    return {
-      loading,
-      credentials,
-      onSubmit
-    }
-  }
+const loading = ref(false)
+const credentials = ref({
+  email: '',
+  password: '',
+  password_confirmation: ''
 })
+
+onMounted(() => {
+  credentials.value.email = String($route.query.email)
+})
+
+function onSubmit () {
+  loading.value = true
+  const token = $route.query.token
+
+  api.post('reset-password', { ...credentials.value, token })
+    .then(async (response) => {
+      await $router.replace({ name: 'login' })
+      $q.notify({ type: 'positive', message: response.data.message })
+    })
+    .finally(() => {
+      credentials.value.password = ''
+      credentials.value.password_confirmation = ''
+      loading.value = false
+    })
+}
 </script>

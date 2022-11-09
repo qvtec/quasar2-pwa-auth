@@ -11,10 +11,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     meta: { requireAuth: false },
     children: [
-      { path: 'login', name: 'login', component: () => import('pages/auth/Login.vue') },
-      { path: 'signup', name: 'signup', component: () => import('pages/auth/Signup.vue') },
-      { path: 'emailverify', name: 'emailverify', component: () => import('pages/auth/EmailVerify.vue') },
-      { path: 'twofactor', name: 'twofactor', component: () => import('pages/auth/TwoFactorChallenge.vue') }
+      { path: 'login', name: 'login', component: () => import('src/pages/auth/LoginPage.vue') },
+      { path: 'signup', name: 'signup', component: () => import('src/pages/auth/SignupPage.vue') },
+      { path: 'emailverify', name: 'emailverify', component: () => import('src/pages/auth/EmailVerifyPage.vue') },
+      { path: 'twofactor', name: 'twofactor', component: () => import('src/pages/auth/TwoFactorChallengePage.vue') }
     ]
   },
   { // Password Routes
@@ -22,8 +22,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     meta: { requireAuth: false },
     children: [
-      { path: 'remind', name: 'password.remind', component: () => import('pages/auth/PasswordRemind.vue') },
-      { path: 'reset', name: 'password.reset', component: () => import('pages/auth/PasswordReset.vue') }
+      { path: 'remind', name: 'password.remind', component: () => import('src/pages/auth/PasswordRemindPage.vue') },
+      { path: 'reset', name: 'password.reset', component: () => import('src/pages/auth/PasswordResetPage.vue') }
     ]
   },
   { // User Routes
@@ -31,8 +31,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     meta: { requireAuth: true },
     children: [
-      { path: 'home', name: 'home', component: () => import('pages/user/Home.vue') },
-      { path: 'profile', name: 'profile', component: () => import('pages/user/Profile.vue') }
+      { path: 'home', name: 'home', component: () => import('src/pages/user/HomePage.vue') },
+      { path: 'profile', name: 'profile', component: () => import('src/pages/user/ProfilePage.vue') }
     ]
   },
 

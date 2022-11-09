@@ -77,53 +77,39 @@
   </q-card>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 
-export default defineComponent({
-  name: 'ProfileUpdatePasswordComponent',
-  setup () {
-    const $q = useQuasar()
+const $q = useQuasar()
 
-    const loading = ref(false)
-    const current_password = ref('')
-    const password = ref('')
-    const password_confirmation = ref('')
-    const errors = ref({})
+const loading = ref(false)
+const current_password = ref('')
+const password = ref('')
+const password_confirmation = ref('')
+const errors = ref({})
 
-    function onSubmit () {
-      loading.value = true
+function onSubmit () {
+  loading.value = true
 
-      const params = {
-        'current_password': current_password.value,
-        'password': password.value,
-        'password_confirmation': password_confirmation.value,
-      }
-
-      api.put('user/password', params)
-        .then(() => {
-          $q.notify({ type: 'positive', message: '更新完了しました' })
-        })
-        .catch(error => {
-          if (error.response && error.response.status === 422) {
-            errors.value = error.response.data.errors
-          }
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    }
-
-    return {
-      current_password,
-      password,
-      password_confirmation,
-      loading,
-      errors,
-      onSubmit
-    }
+  const params = {
+    'current_password': current_password.value,
+    'password': password.value,
+    'password_confirmation': password_confirmation.value,
   }
-})
+
+  api.put('user/password', params)
+    .then(() => {
+      $q.notify({ type: 'positive', message: '更新完了しました' })
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 422) {
+        errors.value = error.response.data.errors
+      }
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
 </script>

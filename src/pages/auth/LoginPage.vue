@@ -71,71 +71,53 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { isEmail } from '../../helpers/patterns'
 import { useAuthStore } from 'stores/auth'
 import { useRouter } from 'vue-router'
 import { Credentials } from 'components/models'
 
-export default defineComponent({
-  name: 'LoginPage',
-  setup() {
-    const $q = useQuasar()
-    const $authStore = useAuthStore()
-    const $router = useRouter()
+const $q = useQuasar()
+const $authStore = useAuthStore()
+const $router = useRouter()
 
-    const loading = ref(false)
-    const remember = ref(false)
-    const credentials = ref<Credentials>({
-      email: '',
-      password: '',
-      remember: false
-    });
+const loading = ref(false)
+const isPwd = ref(true)
+const remember = ref(false)
+const credentials = ref<Credentials>({
+  email: '',
+  password: '',
+  remember: false
+});
 
-    const user = computed(() => {
-      return $authStore.user
-    })
+function onSubmit() {
+  loading.value = true
 
-    function onSubmit() {
-      loading.value = true
+  if (remember.value) {
+    credentials.value.remember = true
+  }
 
-      if (remember.value) {
-        credentials.value.remember = true
+  $authStore.login(credentials.value)
+    .then(async () => {
+      if (!$authStore.isAuth) {
+        if ($authStore.twoFactor) {
+          $router.push({ name: 'twofactor' })
+          return
+        }
+        if ($authStore.user?.email_verified_at == null) {
+          $router.push({ name: 'emailverify' })
+          return
+        }
       }
 
-      $authStore.login(credentials.value)
-        .then(async () => {
-          if (!$authStore.isAuth) {
-            if ($authStore.twoFactor) {
-              $router.push({ name: 'twofactor' })
-              return
-            }
-            if ($authStore.user?.email_verified_at == null) {
-              $router.push({ name: 'emailverify' })
-              return
-            }
-          }
-
-          await $router.push({ name: 'home' })
-          $q.notify({ type: 'positive', message: 'ログインに成功しました' })
-        })
-        .catch(() => {
-          $q.notify({ type: 'negative', message: 'ログインに失敗しました' })
-          loading.value = false
-        })
-    }
-
-    return {
-      isPwd: ref(true),
-      loading,
-      user,
-      remember,
-      credentials,
-      isEmail,
-      onSubmit
-    }
-  }
-})
+      await $router.push({ name: 'home' })
+      $q.notify({ type: 'positive', message: 'ログインに成功しました' })
+    })
+    .catch(() => {
+      $q.notify({ type: 'negative', message: 'ログインに失敗しました' })
+      loading.value = false
+    })
+}
 </script>

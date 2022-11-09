@@ -35,46 +35,36 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from 'stores/auth'
 import { api } from 'boot/axios'
 
-export default defineComponent({
-  name: 'EmailVerifyPage',
-  setup() {
-    const $q = useQuasar()
-    const $router = useRouter()
-    const $authStore = useAuthStore()
+const $q = useQuasar()
+const $router = useRouter()
+const $authStore = useAuthStore()
 
-    const loading = ref(false)
+const loading = ref(false)
 
-    if (!$authStore.user) {
-      $router.push({ name: 'login' })
-    }
+if (!$authStore.user) {
+  $router.push({ name: 'login' })
+}
 
-    const user = computed(() => {
-      return $authStore.user
-    })
-
-    function verifySend () {
-      loading.value = true
-
-      api.post('email/verification-notification')
-        .then(() => {
-          $q.notify({ type: 'positive', message: '認証用URLを送信しました' })
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    }
-    return {
-      loading,
-      user,
-      verifySend
-    }
-  }
+const user = computed(() => {
+  return $authStore.user
 })
+
+function verifySend () {
+  loading.value = true
+
+  api.post('email/verification-notification')
+    .then(() => {
+      $q.notify({ type: 'positive', message: '認証用URLを送信しました' })
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
 </script>

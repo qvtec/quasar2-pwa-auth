@@ -114,52 +114,39 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed } from 'vue'
 import { isEmail } from '../../helpers/patterns'
 import { useAuthStore } from 'stores/auth'
 import { useRouter } from 'vue-router'
 import { SignupInterface } from 'components/models'
 
-export default defineComponent({
-  name: 'SignupPage',
-  setup() {
-    const $authStore = useAuthStore()
-    const $router = useRouter()
+const $authStore = useAuthStore()
+const $router = useRouter()
 
-    const loading = ref(false)
-    const form = ref<SignupInterface>({
-      email: '',
-      password: '',
-      password_confirmation: '',
-      name: ''
-    });
+const loading = ref(false)
+const isPwd = ref(true)
+const form = ref<SignupInterface>({
+  email: '',
+  password: '',
+  password_confirmation: '',
+  name: ''
+});
 
-    if ($authStore.user && $authStore.user.email_verified_at == null) {
-      $router.push({ name: 'emailverify' })
-    }
+if ($authStore.user && $authStore.user.email_verified_at == null) {
+  $router.push({ name: 'emailverify' })
+}
 
-    const user = computed(() => {
-      return $authStore.user
-    })
-
-    function onSubmit() {
-      loading.value = true
-
-      $authStore.signup(form.value)
-        .then(async () => {
-          await $router.push({ name: 'emailverify' })
-        })
-    }
-
-    return {
-      isPwd: ref(true),
-      loading,
-      user,
-      form,
-      isEmail,
-      onSubmit
-    }
-  }
+const user = computed(() => {
+  return $authStore.user
 })
+
+function onSubmit() {
+  loading.value = true
+
+  $authStore.signup(form.value)
+    .then(async () => {
+      await $router.push({ name: 'emailverify' })
+    })
+}
 </script>

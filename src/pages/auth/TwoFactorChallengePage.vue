@@ -39,8 +39,8 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { api } from 'boot/axios'
@@ -50,47 +50,35 @@ export interface TwoFactorChallenge {
   code?: string;
 }
 
-export default defineComponent({
-  name: 'TwoFactorChallengePage',
-  setup() {
-    const $q = useQuasar()
-    const $router = useRouter()
+const $q = useQuasar()
+const $router = useRouter()
 
-    const loading = ref(false)
-    const code = ref('')
-    const use_recovery_code = ref(false)
+const loading = ref(false)
+const code = ref('')
+const use_recovery_code = ref(false)
 
-    function login () {
-      loading.value = true
+function login () {
+  loading.value = true
 
-      const params: TwoFactorChallenge = {}
+  const params: TwoFactorChallenge = {}
 
-      if (use_recovery_code.value) {
-        params.recovery_code = code.value
-      } else {
-        params.code = code.value
-      }
-
-      api.post('two-factor-challenge', params)
-        .then(() => {
-          $router.replace({ name: 'home' })
-          $q.notify({ type: 'positive', message: 'ログインに成功しました' })
-        })
-        .catch(() => {
-          $router.replace({ name: 'login' })
-          $q.notify({ type: 'negative', message: 'ログインに失敗しました' })
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    }
-
-    return {
-      loading,
-      code,
-      use_recovery_code,
-      login,
-    }
+  if (use_recovery_code.value) {
+    params.recovery_code = code.value
+  } else {
+    params.code = code.value
   }
-})
+
+  api.post('two-factor-challenge', params)
+    .then(() => {
+      $router.replace({ name: 'home' })
+      $q.notify({ type: 'positive', message: 'ログインに成功しました' })
+    })
+    .catch(() => {
+      $router.replace({ name: 'login' })
+      $q.notify({ type: 'negative', message: 'ログインに失敗しました' })
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
 </script>

@@ -56,61 +56,47 @@
   </q-card>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from 'stores/auth'
 import { useRouter } from 'vue-router'
 import { api } from 'boot/axios'
 
-export default defineComponent({
-  name: 'ProfileDeleteAccountComponent',
-  setup() {
-    const $q = useQuasar()
-    const $authStore = useAuthStore()
-    const $router = useRouter()
+const $q = useQuasar()
+const $authStore = useAuthStore()
+const $router = useRouter()
 
-    const loading = ref(false)
-    const errors = ref({})
-    const delDialog = ref(false)
-    const form = ref({
-      password: ''
-    })
-
-    function openDelDialog () {
-      delDialog.value = true
-      form.value.password = ''
-    }
-
-    function onSubmit () {
-      loading.value = true
-
-      const params = {
-        'password': form.value.password
-      }
-
-      api.delete('user', { params })
-        .then(() => {
-          $authStore.logout()
-          $router.replace({ name: 'top' })
-          $q.notify({ type: 'positive', message: '削除しました' })
-        })
-        .catch(error => {
-          if (error.response.status === 422) {
-            errors.value = error.response.data.errors
-          }
-        })
-        .finally(() => { loading.value = false })
-    }
-
-    return {
-      loading,
-      errors,
-      delDialog,
-      form,
-      openDelDialog,
-      onSubmit,
-    }
-  }
+const loading = ref(false)
+const errors = ref({})
+const delDialog = ref(false)
+const form = ref({
+  password: ''
 })
+
+function openDelDialog () {
+  delDialog.value = true
+  form.value.password = ''
+}
+
+function onSubmit () {
+  loading.value = true
+
+  const params = {
+    'password': form.value.password
+  }
+
+  api.delete('user', { params })
+    .then(() => {
+      $authStore.logout()
+      $router.replace({ name: 'top' })
+      $q.notify({ type: 'positive', message: '削除しました' })
+    })
+    .catch(error => {
+      if (error.response.status === 422) {
+        errors.value = error.response.data.errors
+      }
+    })
+    .finally(() => { loading.value = false })
+}
 </script>

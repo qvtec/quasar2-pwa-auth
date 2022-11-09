@@ -48,41 +48,29 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { api } from 'boot/axios'
 
-export default defineComponent({
-  name: 'PasswordRemindPage',
-  setup() {
-    const $q = useQuasar()
+const $q = useQuasar()
 
-    const loading = ref(false)
-    const sent = ref(false)
-    const form = ref({
-      email: ''
-    })
-
-    function onSubmit () {
-      loading.value = true
-
-      api.post('forgot-password', form.value)
-        .then(response => {
-          sent.value = true
-          $q.notify({ type: 'positive', message: response.data.message })
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    }
-
-    return {
-      form,
-      loading,
-      sent,
-      onSubmit
-    }
-  }
+const loading = ref(false)
+const sent = ref(false)
+const form = ref({
+  email: ''
 })
+
+function onSubmit () {
+  loading.value = true
+
+  api.post('forgot-password', form.value)
+    .then(response => {
+      sent.value = true
+      $q.notify({ type: 'positive', message: response.data.message })
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
 </script>

@@ -1,6 +1,6 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <q-card flat bordered>
+    <q-card flat bordered v-if="user">
       <q-item>
         <q-item-section avatar>
           <q-avatar v-if="user.photo"><q-img :src="user.photo" /></q-avatar>
@@ -16,22 +16,7 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue'
+<script setup lang="ts">
 import { useAuthStore } from 'stores/auth'
-
-export default defineComponent({
-  name: 'HomePage',
-  setup() {
-    const $authStore = useAuthStore()
-
-    const user = computed(() => {
-      return $authStore.user
-    })
-
-    return {
-      user
-    }
-  }
-});
+const { user } = useAuthStore()
 </script>

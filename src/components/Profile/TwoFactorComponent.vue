@@ -94,8 +94,8 @@
   </q-card>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useAuthStore } from 'stores/auth'
 import { storeToRefs } from 'pinia'
 import { api } from 'boot/axios'
@@ -104,98 +104,79 @@ export interface QrCode {
   password: string;
 }
 
-export default defineComponent({
-  name: 'ProfileTwoFactorComponent',
-  setup() {
-    const $authStore = useAuthStore()
+const $authStore = useAuthStore()
 
-    const loading = ref(false)
-    const password = ref('')
-    const confirmDialog = ref(false)
-    const twoFactorDialog = ref(false)
-    const qrCode = ref(null)
-    const recoveryCodes = ref([])
-    const codeLoading = ref(false)
-    const errors = ref({})
+const loading = ref(false)
+const password = ref('')
+const confirmDialog = ref(false)
+const twoFactorDialog = ref(false)
+const qrCode = ref(null)
+const recoveryCodes = ref([])
+const codeLoading = ref(false)
+const errors = ref({})
 
-    const { twoFactor } = storeToRefs($authStore)
+const { twoFactor } = storeToRefs($authStore)
 
-    function enable () {
-      loading.value = true
-      api.post('user/two-factor-authentication')
-        .then(() => {
-          api.get('user/two-factor-qr-code')
-            .then(res => {
-              qrCode.value = res.data.svg
-              codeLoading.value = false
-            })
+function enable () {
+  loading.value = true
+  api.post('user/two-factor-authentication')
+    .then(() => {
+      api.get('user/two-factor-qr-code')
+        .then(res => {
+          qrCode.value = res.data.svg
+          codeLoading.value = false
+        })
 
-          api.get('user/two-factor-recovery-codes')
-            .then(res => {
-              recoveryCodes.value = res.data
-            })
+      api.get('user/two-factor-recovery-codes')
+        .then(res => {
+          recoveryCodes.value = res.data
+        })
 
-          codeLoading.value = true
-          confirmDialog.value = false
-          twoFactorDialog.value = true
-          $authStore.setTowFactor(true)
-        })
-        .catch(err => {
-          if (err.response.status === 423) {
-            confirmDialog.value = true
-          }
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    }
+      codeLoading.value = true
+      confirmDialog.value = false
+      twoFactorDialog.value = true
+      $authStore.setTowFactor(true)
+    })
+    .catch(err => {
+      if (err.response.status === 423) {
+        confirmDialog.value = true
+      }
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
 
-    function disable () {
-      loading.value = true
-      api.delete('user/two-factor-authentication')
-        .then(() => {
-          $authStore.setTowFactor(false)
-          confirmDialog.value = false
-        })
-        .catch(err => {
-          if (err.response.status === 423) {
-            confirmDialog.value = true
-          }
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    }
+function disable () {
+  loading.value = true
+  api.delete('user/two-factor-authentication')
+    .then(() => {
+      $authStore.setTowFactor(false)
+      confirmDialog.value = false
+    })
+    .catch(err => {
+      if (err.response.status === 423) {
+        confirmDialog.value = true
+      }
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
 
-    function confirm () {
-      api.post('user/confirm-password', { password: password.value })
-        .then(() => {
-          if ($authStore.twoFactor) {
-            disable()
-          } else {
-            enable()
-          }
-        })
-        .catch(err => {
-          if (err.response.status === 422) {
-            errors.value = err.response.data.errors
-          }
-        })
-    }
-    return {
-      loading,
-      errors,
-      password,
-      confirmDialog,
-      twoFactorDialog,
-      qrCode,
-      recoveryCodes,
-      codeLoading,
-      twoFactor,
-      enable,
-      disable,
-      confirm
-    }
-  }
-})
+function confirm () {
+  api.post('user/confirm-password', { password: password.value })
+    .then(() => {
+      if ($authStore.twoFactor) {
+        disable()
+      } else {
+        enable()
+      }
+    })
+    .catch(err => {
+      if (err.response.status === 422) {
+        errors.value = err.response.data.errors
+      }
+    })
+}
 </script>

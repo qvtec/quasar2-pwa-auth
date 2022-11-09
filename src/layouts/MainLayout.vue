@@ -49,39 +49,26 @@
   </q-layout>
 </template>
 
-<script lang="ts">
-import { useAuthStore } from 'stores/auth';
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { useAuthStore } from 'stores/auth'
 import { useRouter } from 'vue-router'
-import { defineComponent, computed, ref } from 'vue';
 
-export default defineComponent({
-  name: 'MainLayout',
+const $authStore = useAuthStore()
+const $router = useRouter()
 
-  setup () {
-    const $authStore = useAuthStore()
-    const $router = useRouter()
+const left = ref(false)
 
-    const left = ref(false)
-
-    const user = computed(() => {
-      return $authStore.user
-    })
-
-    const isAuth = computed(() => {
-      return $authStore.isAuth
-    })
-
-    async function logout () {
-      await $router.push({ name: 'login' })
-      await $authStore.logout()
-    }
-
-    return {
-      left,
-      user,
-      isAuth,
-      logout
-    }
-  }
+const user = computed(() => {
+  return $authStore.user
 })
+
+const isAuth = computed(() => {
+  return $authStore.isAuth
+})
+
+async function logout () {
+  await $router.push({ name: 'login' })
+  await $authStore.logout()
+}
 </script>
