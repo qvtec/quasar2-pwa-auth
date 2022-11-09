@@ -1,6 +1,6 @@
 <template>
   <q-page padding class="fit row justify-center q-pa-md items-baseline">
-    <div class="col-xs-12 col-sm-7 col-lg-5" v-if="!user">
+    <div class="col-xs-12 col-sm-7 col-lg-5">
       <q-card flat bordered>
         <q-card-section class="bg-secondary text-white">
           <div class="text-h6">Login</div>
@@ -110,6 +110,10 @@ export default defineComponent({
           if (!$authStore.isAuth) {
             if ($authStore.twoFactor) {
               $router.push({ name: 'twofactor' })
+              return
+            }
+            if ($authStore.user?.email_verified_at == null) {
+              $router.push({ name: 'emailverify' })
               return
             }
           }

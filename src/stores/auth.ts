@@ -33,6 +33,9 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async login(creds: Credentials) {
+      if (this.user) {
+        await this.logout()
+      }
       await api.post('login', creds)
         .then(res => {
           this.setTowFactor(res.data.two_factor)

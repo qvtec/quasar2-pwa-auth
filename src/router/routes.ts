@@ -13,6 +13,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: 'login', name: 'login', component: () => import('pages/auth/Login.vue') },
       { path: 'signup', name: 'signup', component: () => import('pages/auth/Signup.vue') },
+      { path: 'emailverify', name: 'emailverify', component: () => import('pages/auth/EmailVerify.vue') },
       { path: 'twofactor', name: 'twofactor', component: () => import('pages/auth/TwoFactorChallenge.vue') }
     ]
   },

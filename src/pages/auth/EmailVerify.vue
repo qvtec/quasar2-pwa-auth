@@ -9,14 +9,17 @@
         <q-separator />
 
         <q-card-section>
-          登録したメールアドレスに認証URLを送信しています。<br />
+          登録したメールアドレス<strong>{{ user.email }}</strong>に認証URLを送信しています。<br />
           届いたリンクからアカウント登録を完了させてください。
         </q-card-section>
 
         <q-separator />
 
         <q-card-section>
-          リンクが届かない場合は認証メールを再送信してください。<br />
+          リンクが届かない場合は認証メールを再送信してください。
+        </q-card-section>
+
+        <q-card-section>
           <q-btn
             flat
             color="primary"
@@ -24,6 +27,7 @@
             :loading="loading"
             icon="mail_outline"
             @click="verifySend"
+            padding="none"
           />
         </q-card-section>
       </q-card>
@@ -32,16 +36,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from 'stores/auth'
 import { api } from 'boot/axios'
 
 export default defineComponent({
   name: 'EmailVerifyPage',
   setup() {
     const $q = useQuasar()
+    const $router = useRouter()
+    const $authStore = useAuthStore()
 
     const loading = ref(false)
+
+    if (!$authStore.user) {
+      $router.push({ name: 'login' })
+    }
+
+    const user = computed(() => {
+      return $authStore.user
+    })
 
     function verifySend () {
       loading.value = true
@@ -56,6 +72,7 @@ export default defineComponent({
     }
     return {
       loading,
+      user,
       verifySend
     }
   }

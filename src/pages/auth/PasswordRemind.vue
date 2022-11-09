@@ -41,8 +41,8 @@
           </q-form>
         </q-card-section>
       </q-card>
-      <div class="q-py-md">
-        <q-btn flat color="primary" label="ログイン画面はこちら" to="/auth/login" />
+      <div class="q-py-sm">
+        <q-btn flat label="ログイン画面はこちら" to="/auth/login" padding="none" color="secondary" />
       </div>
     </div>
   </q-page>
